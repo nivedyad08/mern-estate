@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import SignOut from "./pages/SignOut";
 import SignUp from "./pages/SignUp";
 import Header from "./components/Header";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -19,7 +20,9 @@ function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/about" element={<About />} />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
         <Route path="/sign-out" element={<SignOut />} />
       </Routes>
     </BrowserRouter>

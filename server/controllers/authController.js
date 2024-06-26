@@ -34,4 +34,39 @@ const signin = async (req, res, next) => {
   }
 };
 
-export { signup, signin };
+const google = async (req, res, next) => {
+  try {
+    const { name, email, photo } = req.body;
+    const user = await User.findOne({ email }).lean();
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const { password: pass, ...rest } = user;
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    } else {
+      const generatedPassword = Math.random().toString(36).slice(-8);
+      const newUser = new User({
+        username: name
+          .split(" ")
+          .join("".toLocaleLowerCase() + Math.random().toString(36).slice(-4)),
+        email: email,
+        password: generatedPassword,
+        avatar: photo,
+      });
+      await newUser.save();
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const newUserObj = newUser.toObject();
+      const { password: pass, ...rest } = newUserObj;
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { signup, signin, google };

@@ -8,11 +8,11 @@ import {
   signInFailure,
   signInSuccess,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector((state) => state.user);
-  console.log(useSelector((state) => state.user));
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -27,9 +27,7 @@ export default function SignIn() {
     dispatch(signInStart());
     try {
       const res = await axios.post("auth/signin", formData);
-      console.log(1121323);
       if (res.success == false) {
-        // console.log("res=======", res);
         dispatch(signInFailure(res.message));
         return;
       }
@@ -65,6 +63,7 @@ export default function SignIn() {
         >
           {loading ? "Loading..." : "Sign In"}
         </button>
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5">
         <p>Don't have an account ?</p>
