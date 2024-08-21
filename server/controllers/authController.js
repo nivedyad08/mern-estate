@@ -1,5 +1,5 @@
 import User from "../models/userModel.js";
-import { errorHandler } from "../utils/error.js";
+import { errorHandler } from "../utils/errorHandler.js";
 import jwt from "jsonwebtoken";
 
 const signup = async (req, res, next) => {
@@ -63,12 +63,19 @@ const google = async (req, res, next) => {
         .cookie("access_token", token, { httpOnly: true })
         .status(200)
         .json(rest);
-
-      res.status(200).json(rest);
     }
   } catch (error) {
     next(error);
   }
 };
 
-export { signup, signin, google };
+const signOut = async (req, res, next) => {
+  try {
+    res.clearCookie("access_token");
+    res.status(200).json("User has been logged out!");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { signup, signin, google, signOut };

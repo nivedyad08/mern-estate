@@ -1,5 +1,5 @@
 import User from "../models/userModel.js";
-// import { errorHandler } from "../utils/error";
+import { errorHandler } from "../utils/errorHandler.js";
 
 const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.id)
@@ -18,10 +18,23 @@ const updateUser = async (req, res, next) => {
       { new: true }
     );
     const { password, ...rest } = updatedUser._doc;
-    return;
+    res.status(200).json(rest);
   } catch (error) {
     next(error);
   }
 };
 
-export { updateUser };
+const deleteUser = async (req, res, next) => {
+  if (req.user.id !== req.params.id) {
+    return next(errorHandler(401, "User not deleted !"));
+  }
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.clearCookie("access_token");
+    res.status(200).json("User has been deleted!");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { updateUser, deleteUser };
