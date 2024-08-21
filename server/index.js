@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import userRouter from "./routes/userRoute.js";
 import authRoute from "./routes/authRoute.js";
+import listingRoute from "./routes/listingRoute.js";
 
 // Configure dotenv to load environment variables from .env file
 dotenv.config();
@@ -28,6 +29,7 @@ app.listen(3000, () => {
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRoute);
+app.use("/api/listing", listingRoute);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
